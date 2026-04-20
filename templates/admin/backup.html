@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Data Backup - VibeWrite{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Data Backup & Recovery</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Create Backup -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Create New Backup</h5>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="form-group mb-3">
+                        {{ form.backup_type.label(class="form-label") }}
+                        {{ form.backup_type(class="form-select") }}
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-download me-2"></i>Create Backup
+                    </button>
+                </form>
+                
+                <div class="mt-4">
+                    <h6>Backup Types:</h6>
+                    <ul class="small text-muted">
+                        <li><strong>Full Backup:</strong> All users, posts, comments, and ads</li>
+                        <li><strong>Posts Only:</strong> Only blog posts and comments</li>
+                        <li><strong>Users Only:</strong> Only user accounts and profiles</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Backup History -->
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Backup History</h5>
+            </div>
+            <div class="card-body">
+                {% if backups %}
+                    <div class="list-group list-group-flush">
+                        {% for backup in backups %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">{{ backup.filename }}</h6>
+                                <small class="text-muted">
+                                    Type: {{ backup.backup_type }} • 
+                                    Size: {{ backup.file_size }} • 
+                                    {{ backup.created_at.strftime('%Y-%m-%d %H:%M') }}
+                                </small>
+                            </div>
+                            <a href="{{ url_for('admin.download_backup', backup_id=backup.id) }}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="fas fa-download"></i>
+                            </a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted">No backups created yet.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Backup Information -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Backup Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-shield-alt fa-2x text-primary mb-2"></i>
+                            <h6>Data Security</h6>
+                            <p class="small text-muted">All backups are encrypted and stored securely</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-sync fa-2x text-success mb-2"></i>
+                            <h6>Auto Backup</h6>
+                            <p class="small text-muted">Automatic backups run weekly to protect your data</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center">
+                            <i class="fas fa-cloud-download-alt fa-2x text-info mb-2"></i>
+                            <h6>Easy Recovery</h6>
+                            <p class="small text-muted">Download backups anytime for local storage</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

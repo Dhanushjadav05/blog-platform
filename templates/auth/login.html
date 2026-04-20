@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Sign In - VibeWrite{% endblock %}
+
+{% block content %}
+<section class="py-6 bg-light min-vh-100 d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card border-0 shadow-lg">
+                    <div class="card-body p-5">
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold">Welcome Back</h2>
+                            <p class="text-muted">Sign in to your VibeWrite account</p>
+                        </div>
+                        
+                        <form method="POST" action="{{ url_for('login') }}">
+                            <div class="mb-4">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" name="email" class="form-control form-control-lg" 
+                                       placeholder="Enter your email" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Password</label>
+                                <input type="password" name="password" class="form-control form-control-lg" 
+                                       placeholder="Enter your password" required>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary btn-lg w-100 mb-4">
+                                Sign In
+                            </button>
+                            
+                            <div class="text-center">
+                                <p class="text-muted">
+                                    Don't have an account? 
+                                    <a href="{{ url_for('register') }}" class="text-decoration-none fw-bold">Sign up</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

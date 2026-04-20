@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Story - VibeWrite{% endblock %}
+
+{% block content %}
+<section class="py-6">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col">
+                <h1 class="h2 fw-bold">Edit Story</h1>
+                <p class="text-muted">Update your story content and settings</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0">
+                    <div class="card-body p-4">
+                        <form method="POST" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Story Title</label>
+                                <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Excerpt</label>
+                                <textarea name="excerpt" class="form-control" rows="3">{{ post.excerpt or '' }}</textarea>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Story Content</label>
+                                <textarea name="content" class="form-control" rows="15" data-auto-resize="true" required>{{ post.content }}</textarea>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Featured Image</label>
+                                    <input type="file" name="featured_image" class="form-control">
+                                    {% if post.featured_image %}
+                                    <small class="text-muted">Current: {{ post.featured_image }}</small>
+                                    {% endif %}
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Category</label>
+                                    <input type="text" name="category" class="form-control" value="{{ post.category or '' }}">
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-4">
+                                    <label class="form-label fw-bold">Visibility</label>
+                                    <select name="visibility" class="form-select" onchange="togglePasswordField()">
+                                        <option value="public" {% if post.visibility == 'public' %}selected{% endif %}>Public</option>
+                                        <option value="private" {% if post.visibility == 'private' %}selected{% endif %}>Private</option>
+                                        <option value="password" {% if post.visibility == 'password' %}selected{% endif %}>Password Protected</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-4">
+                                    <div class="form-group" id="password-field" style="{% if post.visibility != 'password' %}display: none;{% endif %}">
+                                        <label class="form-label fw-bold">Story Password</label>
+                                        <input type="password" name="password" class="form-control" value="{{ post.password or '' }}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Tags</label>
+                                <input type="text" name="tags" class="form-control" value="{{ post.tags or '' }}">
+                            </div>
+                            
+                            <div class="d-flex gap-3">
+                                <button type="submit" class="btn btn-primary btn-lg px-5">
+                                    <i class="fas fa-save me-2"></i>Update Story
+                                </button>
+                                <a href="{{ url_for('author_posts') }}" class="btn btn-outline-secondary btn-lg px-5">
+                                    Cancel
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold mb-0">Story Statistics</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <small class="text-muted">Created</small>
+                            <div class="fw-bold">{{ post.created_at.strftime('%B %d, %Y') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Last Updated</small>
+                            <div class="fw-bold">{{ post.updated_at.strftime('%B %d, %Y') }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Likes</small>
+                            <div class="fw-bold">{{ post.like_count() }}</div>
+                        </div>
+                        <div class="mb-3">
+                            <small class="text-muted">Comments</small>
+                            <div class="fw-bold">{{ post.comment_count() }}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+function togglePasswordField() {
+    const visibility = document.querySelector('select[name="visibility"]').value;
+    const passwordField = document.getElementById('password-field');
+    
+    if (visibility === 'password') {
+        passwordField.style.display = 'block';
+    } else {
+        passwordField.style.display = 'none';
+    }
+}
+
+// Auto-resize textarea
+document.querySelector('textarea[data-auto-resize]').addEventListener('input', function() {
+    this.style.height = 'auto';
+    this.style.height = (this.scrollHeight) + 'px';
+});
+</script>
+{% endblock %}

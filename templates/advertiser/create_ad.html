@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+
+{% block title %}Create Ad - VibeWrite{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Create New Ad Campaign</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Ad Title</label>
+                        <input type="text" name="title" class="form-control" placeholder="Enter ad campaign title" required>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label">Ad Content</label>
+                        <textarea name="content" class="form-control" rows="4" 
+                                  placeholder="Describe your ad content (optional)"></textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Image URL</label>
+                                <input type="url" name="image_url" class="form-control" 
+                                                placeholder="https://example.com/image.jpg">
+                                <small class="form-text text-muted">
+                                    URL to your ad image (recommended: 1200x600px)
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Target URL</label>
+                                <input type="url" name="target_url" class="form-control" 
+                                                 placeholder="https://yourwebsite.com" required>
+                                <small class="form-text text-muted">
+                                    Where users will go when they click your ad
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Ad Type</label>
+                                <select name="ad_type" class="form-select" required>
+                                    <option value="banner">Banner</option>
+                                    <option value="sidebar">Sidebar</option>
+                                    <option value="inline">Inline</option>
+                                </select>
+                                <small class="form-text text-muted">
+                                    Choose where your ad will appear
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Budget ($)</label>
+                                <input type="number" name="budget" class="form-control" 
+                                             placeholder="0.00" step="0.01" min="0" required>
+                                <small class="form-text text-muted">
+                                    Total budget for this campaign
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-paper-plane me-2"></i>Create Campaign
+                        </button>
+                        <a href="{{ url_for('advertiser_ads') }}" 
+                           class="btn btn-outline-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Ad Preview -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Ad Preview</h5>
+            </div>
+            <div class="card-body">
+                <div class="ad-preview text-center p-3 border rounded">
+                    <div id="ad-image-preview" class="mb-3" style="display: none;">
+                        <img src="#" alt="Ad preview" class="img-fluid rounded">
+                    </div>
+                    <div id="no-ad-image" class="text-muted mb-3">
+                        <i class="fas fa-image fa-2x mb-2"></i>
+                        <p>No image selected</p>
+                    </div>
+                    <h6 id="ad-title-preview" class="mb-2">Ad Title Will Appear Here</h6>
+                    <p id="ad-content-preview" class="small text-muted mb-3">
+                        Ad content description will appear here
+                    </p>
+                    <button class="btn btn-sm btn-outline-primary">Visit Website</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Advertising Guidelines -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Advertising Guidelines</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6><i class="fas fa-check-circle text-success me-2"></i>Approval Process</h6>
+                    <p class="small text-muted">
+                        All ads require admin approval before going live.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <h6><i class="fas fa-clock text-warning me-2"></i>Processing Time</h6>
+                    <p class="small text-muted">
+                        Ads are typically approved within 24-48 hours.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <h6><i class="fas fa-ban text-danger me-2"></i>Prohibited Content</h6>
+                    <p class="small text-muted">
+                        No misleading claims, adult content, or illegal products.
+                    </p>
+                </div>
+                <div class="mb-3">
+                    <h6><i class="fas fa-chart-bar text-info me-2"></i>Performance Tracking</h6>
+                    <p class="small text-muted">
+                        Track clicks and impressions from your dashboard.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Live preview functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const titleInput = document.querySelector('input[name="title"]');
+    const contentInput = document.querySelector('textarea[name="content"]');
+    const imageInput = document.querySelector('input[name="image_url"]');
+    const titlePreview = document.getElementById('ad-title-preview');
+    const contentPreview = document.getElementById('ad-content-preview');
+    const imagePreview = document.getElementById('ad-image-preview');
+    const noImage = document.getElementById('no-ad-image');
+    
+    titleInput.addEventListener('input', function() {
+        titlePreview.textContent = this.value || 'Ad Title Will Appear Here';
+    });
+    
+    contentInput.addEventListener('input', function() {
+        contentPreview.textContent = this.value || 'Ad content description will appear here';
+    });
+    
+    imageInput.addEventListener('input', function() {
+        if (this.value) {
+            imagePreview.style.display = 'block';
+            noImage.style.display = 'none';
+            imagePreview.querySelector('img').src = this.value;
+        } else {
+            imagePreview.style.display = 'none';
+            noImage.style.display = 'block';
+        }
+    });
+});
+</script>
+{% endblock %}

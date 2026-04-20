@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - VibeWrite{% endblock %}
+
+{% block content %}
+<section class="py-6">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12">
+                <h1 class="h2 fw-bold">Admin Dashboard</h1>
+                <p class="text-muted">Manage your VibeWrite platform</p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-4 mb-5">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-primary bg-opacity-10 rounded p-3 me-3">
+                                <i class="fas fa-users text-primary fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0 fw-bold">{{ total_users }}</h3>
+                                <small class="text-muted">Total Users</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-success bg-opacity-10 rounded p-3 me-3">
+                                <i class="fas fa-file-alt text-success fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0 fw-bold">{{ total_posts }}</h3>
+                                <small class="text-muted">Total Posts</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-warning bg-opacity-10 rounded p-3 me-3">
+                                <i class="fas fa-ad text-warning fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0 fw-bold">{{ total_ads }}</h3>
+                                <small class="text-muted">Total Ads</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="bg-info bg-opacity-10 rounded p-3 me-3">
+                                <i class="fas fa-clock text-info fa-lg"></i>
+                            </div>
+                            <div>
+                                <h3 class="mb-0 fw-bold">{{ pending_ads }}</h3>
+                                <small class="text-muted">Pending Ads</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card border-0">
+                    <div class="card-header bg-white border-0 pb-0">
+                        <h5 class="fw-bold">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <a href="{{ url_for('admin_users') }}" class="card border-0 text-decoration-none h-100">
+                                    <div class="card-body text-center p-4">
+                                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-users text-primary fa-lg"></i>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Manage Users</h6>
+                                        <small class="text-muted">View and manage all users</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ url_for('admin_ads') }}" class="card border-0 text-decoration-none h-100">
+                                    <div class="card-body text-center p-4">
+                                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-ad text-warning fa-lg"></i>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Manage Ads</h6>
+                                        <small class="text-muted">Approve and manage advertisements</small>
+                                    </div>
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="{{ url_for('admin_backups') }}" class="card border-0 text-decoration-none h-100">
+                                    <div class="card-body text-center p-4">
+                                        <div class="bg-danger bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                            <i class="fas fa-database text-danger fa-lg"></i>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">Site Backups</h6>
+                                        <small class="text-muted">Create and download full-site backups</small>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card border-0">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold">Platform Status</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">System</span>
+                                <span class="badge bg-success">Online</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="text-muted">Database</span>
+                                <span class="badge bg-success">Connected</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-muted">Last Backup</span>
+                                {% if last_backup_at %}
+                                <a href="{{ url_for('admin_backups') }}" class="text-decoration-none">
+                                    <span class="badge bg-secondary">{{ last_backup_at.strftime('%Y-%m-%d %H:%M') }}</span>
+                                </a>
+                                {% else %}
+                                <a href="{{ url_for('admin_backups') }}" class="text-decoration-none">
+                                    <span class="text-muted">Never</span>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}My Ads - VibeWrite{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="h3 mb-0">My Ad Campaigns</h1>
+            <a href="{{ url_for('create_ad') }}" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>New Ad
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        {% if ads %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Target URL</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Clicks</th>
+                            <th>Impressions</th>
+                            <th>Budget</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ad in ads %}
+                        <tr>
+                            <td><strong>{{ ad.title }}</strong></td>
+                            <td>
+                                <small class="text-muted">{{ ad.target_url|truncate(30) }}</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-info">{{ ad.ad_type }}</span>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if ad.status == 'active' %}bg-success
+                                    {% elif ad.status == 'pending' %}bg-warning
+                                    {% elif ad.status == 'rejected' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ ad.status }}
+                                </span>
+                            </td>
+                            <td>{{ ad.clicks }}</td>
+                            <td>{{ ad.impressions }}</td>
+                            <td>${{ "%.2f"|format(ad.budget) }}</td>
+                            <td>{{ ad.created_at.strftime('%Y-%m-%d') }}</td>
+                            <td>
+                                <div class="btn-group btn-group-sm">
+                                    <a href="{{ url_for('edit_ad', ad_id=ad.id) }}" class="btn btn-outline-primary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="{{ url_for('delete_ad', ad_id=ad.id) }}" class="btn btn-outline-danger" onclick="return confirm('Delete this ad?')">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-ad fa-4x text-muted mb-3"></i>
+                <h3>No Ad Campaigns</h3>
+                <p class="text-muted mb-4">Start promoting your business by creating your first ad campaign.</p>
+                <a href="{{ url_for('create_ad') }}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus me-2"></i>Create Your First Ad
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

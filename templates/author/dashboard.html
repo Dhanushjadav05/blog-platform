@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Writer Dashboard - VibeWrite{% endblock %}
+
+{% block content %}
+<section class="py-6">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col">
+                <h1 class="h2 fw-bold">Writer Dashboard</h1>
+                <p class="text-muted">Manage your stories and track your progress</p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-4 mb-5">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-file-alt text-primary fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ posts|length }}</h3>
+                        <small class="text-muted">Total Stories</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-heart text-success fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ total_likes }}</h3>
+                        <small class="text-muted">Total Likes</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-comment text-info fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ total_comments }}</h3>
+                        <small class="text-muted">Total Comments</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-star text-warning fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ writer_tier }}</h3>
+                        <small class="text-muted">Writer Tier</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Writer XP and Audience Achievements -->
+        <div class="row g-4 mb-5">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-bolt text-primary fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ writer_xp }}</h3>
+                        <small class="text-muted">Writer XP</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-secondary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-eye text-secondary fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ total_reads }}</h3>
+                        <small class="text-muted">Total Reads</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-user-check text-info fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ returning_readers }}</h3>
+                        <small class="text-muted">Returning Readers</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Quick Actions -->
+            <div class="col-lg-4 mb-4">
+                <div class="card border-0">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold">Quick Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <a href="{{ url_for('create_post') }}" class="btn btn-primary w-100 mb-3">
+                            <i class="fas fa-plus me-2"></i>Write New Story
+                        </a>
+                        <a href="{{ url_for('author_posts') }}" class="btn btn-outline-primary w-100 mb-3">
+                            <i class="fas fa-list me-2"></i>View All Stories
+                        </a>
+                        <a href="{{ url_for('feed') }}" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-stream me-2"></i>Browse Feed
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Badges -->
+                <div class="card border-0 mt-4">
+                    <div class="card-header bg-white border-0">
+                        <h5 class="fw-bold">Your Achievements</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if current_user.get_badges() %}
+                            <div class="d-flex flex-wrap gap-2">
+                                {% for badge in current_user.get_badges() %}
+                                <span class="badge bg-primary">{{ badge }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-muted text-center mb-0">No badges yet. Keep writing to earn achievements!</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Stories -->
+            <div class="col-lg-8">
+                <div class="card border-0">
+                    <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">Recent Stories</h5>
+                        <a href="{{ url_for('author_posts') }}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        {% if posts %}
+                            <div class="list-group list-group-flush">
+                                {% for post in posts[:5] %}
+                                <div class="list-group-item px-0 border-0">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <h6 class="fw-bold mb-2">{{ post.title }}</h6>
+                                            <p class="text-muted small mb-2">
+                                                {{ post.excerpt or post.content[:100] + '...' }}
+                                            </p>
+                                            <div class="d-flex flex-wrap gap-3 small text-muted">
+                                                <span><i class="fas fa-calendar me-1"></i>{{ post.created_at.strftime('%b %d, %Y') }}</span>
+                                                <span><i class="fas fa-heart me-1"></i>{{ post.like_count() }} likes</span>
+                                                <span><i class="fas fa-comment me-1"></i>{{ post.comment_count() }} comments</span>
+                                                <span class="badge {% if post.is_published %}bg-success{% else %}bg-secondary{% endif %}">
+                                                    {{ 'Published' if post.is_published else 'Draft' }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="btn-group ms-3">
+                                            <a href="{{ url_for('edit_post', post_id=post.id) }}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{{ url_for('view_post', post_id=post.id) }}" class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% if not loop.last %}<hr class="my-3">{% endif %}
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="text-center py-5">
+                                <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                    <i class="fas fa-feather text-muted fa-2x"></i>
+                                </div>
+                                <h5 class="text-muted">No Stories Yet</h5>
+                                <p class="text-muted mb-4">Start your writing journey by creating your first story</p>
+                                <a href="{{ url_for('create_post') }}" class="btn btn-primary">
+                                    <i class="fas fa-plus me-2"></i>Write First Story
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

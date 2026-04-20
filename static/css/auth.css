@@ -1,0 +1,18 @@
+/* Updated Auth Styles */
+.auth-container {
+    background: linear-gradient(135deg, var(--light-gray) 0%, var(--pure-white) 100%);
+}
+
+.auth-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(30, 41, 59, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+}
+
+.auth-logo {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}

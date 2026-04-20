@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+{% block title %}Reader Dashboard - VibeWrite{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Reader Dashboard</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Recommended For You</h5>
+            </div>
+            <div class="card-body">
+                {% if posts %}
+                    {% for post in posts[:3] %}
+                    <div class="card post-card mb-3">
+                        {% if post.featured_image %}
+                        <img src="{{ url_for('static', filename='uploads/' + post.featured_image) }}" 
+                             class="card-img-top post-image" alt="{{ post.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="{{ url_for('view_post', post_id=post.id) }}" class="text-decoration-none text-dark">
+                                    {{ post.title }}
+                                </a>
+                            </h5>
+                            <p class="card-text text-muted">
+                                {{ post.excerpt or post.content[:150] + '...' }}
+                            </p>
+                            <div class="post-meta">
+                                <small class="text-muted">
+                                    By {{ post.author.username }} • 
+                                    {{ post.created_at.strftime('%B %d, %Y') }} • 
+                                    {{ post.like_count() }} likes • 
+                                    {{ post.comment_count() }} comments
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                        <h5>No Posts Available</h5>
+                        <p class="text-muted">There are no posts to display at the moment.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <!-- Quick Stats -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Your Activity</h5>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <div class="stat-number">{{ level or 1 }}</div>
+                    <div class="stat-label">Level</div>
+                </div>
+                <div class="d-flex justify-content-between mt-3">
+                    <div class="text-center flex-fill">
+                        <div class="h4 mb-0">{{ xp or 0 }}</div>
+                        <small class="text-muted">XP</small>
+                    </div>
+                    <div class="text-center flex-fill">
+                        <div class="h4 mb-0">{{ reader_streak or 0 }}</div>
+                        <small class="text-muted">Day Streak</small>
+                    </div>
+                </div>
+                <div class="mt-3">
+                    <p><i class="fas fa-heart text-danger me-2"></i><strong>Likes Given:</strong> {{ likes_given }}</p>
+                    <p><i class="fas fa-comment text-info me-2"></i><strong>Comments:</strong> {{ comments_count }}</p>
+                    <p><i class="fas fa-eye text-success me-2"></i><strong>Posts Read:</strong> {{ posts_read }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <a href="{{ url_for('feed') }}" class="btn btn-primary w-100 mb-2">
+                    <i class="fas fa-stream me-2"></i>Browse Feed
+                </a>
+                <a href="{{ url_for('search') }}" class="btn btn-outline-primary w-100 mb-2">
+                    <i class="fas fa-search me-2"></i>Search Posts
+                </a>
+                <a href="{{ url_for('leaderboards') }}" class="btn btn-outline-info w-100">
+                    <i class="fas fa-user me-2"></i>My Profile
+                </a>
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Your Badges</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.get_badges() %}
+                    {% for badge in current_user.get_badges() %}
+                        <span class="badge-custom me-2 mb-2">{{ badge }}</span>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">No badges yet</p>
+                    <small class="text-muted">Earn badges by being active in the community!</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

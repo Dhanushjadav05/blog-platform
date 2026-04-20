@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Ad - VibeWrite{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">Edit Ad Campaign</h1>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST">
+                    <div class="form-group mb-3">
+                        <label class="form-label">Ad Title</label>
+                        <input type="text" name="title" class="form-control" value="{{ ad.title }}" required>
+                    </div>
+                    
+                    <div class="form-group mb-3">
+                        <label class="form-label">Ad Content</label>
+                        <textarea name="content" class="form-control" rows="4">{{ ad.content or '' }}</textarea>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Image URL</label>
+                                <input type="url" name="image_url" class="form-control" value="{{ ad.image_url or '' }}">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Target URL</label>
+                                <input type="url" name="target_url" class="form-control" value="{{ ad.target_url }}" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Ad Type</label>
+                                <select name="ad_type" class="form-select" required>
+                                    <option value="banner" {% if ad.ad_type == 'banner' %}selected{% endif %}>Banner</option>
+                                    <option value="sidebar" {% if ad.ad_type == 'sidebar' %}selected{% endif %}>Sidebar</option>
+                                    <option value="inline" {% if ad.ad_type == 'inline' %}selected{% endif %}>Inline</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group mb-3">
+                                <label class="form-label">Budget ($)</label>
+                                <input type="number" name="budget" class="form-control" value="{{ ad.budget }}" step="0.01" min="0" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-save me-2"></i>Update Campaign
+                        </button>
+                        <a href="{{ url_for('advertiser_ads') }}" class="btn btn-outline-secondary btn-lg">
+                            Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <!-- Campaign Stats -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Campaign Stats</h5>
+            </div>
+            <div class="card-body">
+                <p><strong>Status:</strong> 
+                    <span class="badge 
+                        {% if ad.status == 'active' %}bg-success
+                        {% elif ad.status == 'pending' %}bg-warning
+                        {% elif ad.status == 'rejected' %}bg-danger
+                        {% else %}bg-secondary{% endif %}">
+                        {{ ad.status }}
+                    </span>
+                </p>
+                <p><strong>Clicks:</strong> {{ ad.clicks }}</p>
+                <p><strong>Impressions:</strong> {{ ad.impressions }}</p>
+                <p><strong>CTR:</strong> 
+                    {% if ad.impressions > 0 %}
+                        {{ "%.2f"|format((ad.clicks / ad.impressions) * 100) }}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </p>
+                <p><strong>Created:</strong> {{ ad.created_at.strftime('%Y-%m-%d') }}</p>
+            </div>
+        </div>
+        
+        <!-- Note -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Important Note</h5>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted">
+                    After editing, your ad will need to be re-approved by an admin before it can go live again.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

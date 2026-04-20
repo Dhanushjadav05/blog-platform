@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - VibeWrite{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="h3 mb-4">My Profile</h1>
+    </div>
+</div>
+
+<div class="row">
+    <!-- Profile Info -->
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <img src="{{ url_for('static', filename='images/default-avatar.png') }}" 
+                     alt="Profile Picture" class="rounded-circle mb-3" width="120" height="120">
+                <h4>{{ current_user.username }}</h4>
+                <p class="text-muted">{{ current_user.email }}</p>
+                
+                <div class="mb-3">
+                    <span class="badge bg-primary">{{ current_user.role|title }}</span>
+                </div>
+                
+                {% if current_user.bio %}
+                <p class="text-muted">{{ current_user.bio }}</p>
+                {% else %}
+                <p class="text-muted">No bio yet. <a href="#">Add one!</a></p>
+                {% endif %}
+                
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Profile
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">My Stats</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-4">
+                        <div class="stat-number">{{ user_posts|length }}</div>
+                        <div class="stat-label">Posts</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-number">{{ user_comments }}</div>
+                        <div class="stat-label">Comments</div>
+                    </div>
+                    <div class="col-4">
+                        <div class="stat-number">{{ total_likes }}</div>
+                        <div class="stat-label">Likes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Badges -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">My Badges</h5>
+            </div>
+            <div class="card-body">
+                {% if current_user.get_badges() %}
+                    {% for badge in current_user.get_badges() %}
+                        <span class="badge-custom me-2 mb-2">{{ badge }}</span>
+                    {% endfor %}
+                {% else %}
+                    <p class="text-muted text-center">No badges yet</p>
+                    <small class="text-muted">Earn badges by being active in the community!</small>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Activity -->
+    <div class="col-md-8">
+        <!-- Recent Posts -->
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="card-title mb-0">My Recent Posts</h5>
+                {% if current_user.role == 'author' %}
+                <a href="{{ url_for('author.create_post') }}" class="btn btn-sm btn-primary">Write New</a>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                {% if user_posts %}
+                    <div class="list-group list-group-flush">
+                        {% for post in user_posts[:5] %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-1">{{ post.title }}</h6>
+                                    <small class="text-muted">
+                                        {{ post.created_at.strftime('%Y-%m-%d') }} • 
+                                        {{ post.like_count() }} likes • 
+                                        {{ post.comment_count() }} comments
+                                    </small>
+                                </div>
+                                <span class="badge bg-{{ 'success' if post.is_published else 'warning' }} ms-2">
+                                    {{ 'Published' if post.is_published else 'Draft' }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if user_posts|length > 5 %}
+                    <div class="text-center mt-3">
+                        <a href="{{ url_for('author.my_posts') if current_user.role == 'author' else '#' }}" 
+                           class="btn btn-outline-primary btn-sm">
+                            View All Posts
+                        </a>
+                    </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-feather-alt fa-3x text-muted mb-3"></i>
+                        <h5>No Posts Yet</h5>
+                        <p class="text-muted">
+                            {% if current_user.role == 'author' %}
+                            Start sharing your thoughts with the community!
+                            {% else %}
+                            Become an author to start writing posts!
+                            {% endif %}
+                        </p>
+                        {% if current_user.role != 'author' %}
+                        <a href="#" class="btn btn-primary">Become an Author</a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Account Info -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Account Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <strong>Username:</strong>
+                        <p class="text-muted">{{ current_user.username }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Email:</strong>
+                        <p class="text-muted">{{ current_user.email }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Role:</strong>
+                        <p class="text-muted">{{ current_user.role|title }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Member Since:</strong>
+                        <p class="text-muted">{{ current_user.created_at.strftime('%B %d, %Y') }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Writer Points:</strong>
+                        <p class="text-muted">{{ current_user.points }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <strong>Account Status:</strong>
+                        <p class="text-muted">
+                            <span class="badge bg-success">Active</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card mt-4">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Quick Actions</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-2">
+                        <a href="{{ url_for('reader.feed') }}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-stream me-2"></i>Browse Feed
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{{ url_for('reader.search') }}" class="btn btn-outline-success w-100">
+                            <i class="fas fa-search me-2"></i>Search Posts
+                        </a>
+                    </div>
+                    {% if current_user.role == 'author' %}
+                    <div class="col-md-6 mb-2">
+                        <a href="{{ url_for('author.create_post') }}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-plus me-2"></i>New Post
+                        </a>
+                    </div>
+                    <div class="col-md-6 mb-2">
+                        <a href="{{ url_for('author.my_posts') }}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-list me-2"></i>My Posts
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}My Ads - VibeWrite{% endblock %}
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">My Ads</h1>
+        <p class="text-muted mb-0">Create, edit, and feature your ads on the homepage.</p>
+      </div>
+      <a href="{{ url_for('advertiser_new_ad') }}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>New Ad
+      </a>
+    </div>
+
+    {% if ads %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Status</th>
+            <th>Budget</th>
+            <th>Impr.</th>
+            <th>Clicks</th>
+            <th>Featured Home</th>
+            <th>Home CPI</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ad in ads %}
+          <tr>
+            <td class="fw-semibold">{{ ad.title }}</td>
+            <td><span class="badge bg-{% if ad.status=='active' %}success{% elif ad.status=='pending' %}warning{% else %}secondary{% endif %}">{{ ad.status|capitalize }}</span></td>
+            <td>${{ '%.2f'|format(ad.budget or 0) }}</td>
+            <td>{{ ad.impressions or 0 }}</td>
+            <td>{{ ad.clicks or 0 }}</td>
+            <td>
+              {% if ad.featured_home %}
+                <span class="badge bg-primary">Yes</span>
+              {% else %}
+                <span class="text-muted">No</span>
+              {% endif %}
+            </td>
+            <td>${{ '%.2f'|format(ad.cpi_home or 0.05) }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('advertiser_edit_ad', ad_id=ad.id) }}">
+                <i class="fas fa-edit me-1"></i>Edit
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="text-muted mb-3">You have no ads yet.</p>
+        <a href="{{ url_for('advertiser_new_ad') }}" class="btn btn-primary">Create your first ad</a>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

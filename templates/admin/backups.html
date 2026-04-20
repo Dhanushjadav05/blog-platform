@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}Site Backups - VibeWrite{% endblock %}
+{% block content %}
+<section class="py-6">
+  <div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h1 class="h3 fw-bold mb-1">Site Backups</h1>
+        <p class="text-muted mb-0">Create and download full-site backups (database + uploads).</p>
+      </div>
+      <form method="POST">
+        <button type="submit" class="btn btn-primary">
+          <i class="fas fa-database me-2"></i>Backup Now
+        </button>
+      </form>
+    </div>
+
+    {% if backups %}
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Size</th>
+            <th>Created</th>
+            <th class="text-end">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in backups %}
+          <tr>
+            <td class="fw-semibold">{{ b.filename }}</td>
+            <td>{{ b.file_size }}</td>
+            <td>{{ b.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin_backup_download', backup_id=b.id) }}">
+                <i class="fas fa-download me-1"></i>Download
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="text-center py-5">
+        <p class="text-muted mb-3">No backups yet.</p>
+        <form method="POST">
+          <button type="submit" class="btn btn-primary">Create first backup</button>
+        </form>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

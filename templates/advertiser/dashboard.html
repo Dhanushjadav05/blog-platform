@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block title %}Advertiser Dashboard - VibeWrite{% endblock %}
+
+{% block content %}
+<section class="py-6">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col">
+                <h1 class="h2 fw-bold">Advertiser Dashboard</h1>
+                <p class="text-muted">Manage your advertising campaigns</p>
+            </div>
+            <div class="col-auto">
+                <a href="{{ url_for('advertiser_new_ad') }}" class="btn btn-primary">
+                    <i class="fas fa-plus me-2"></i>New Campaign
+                </a>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="row g-4 mb-5">
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-ad text-primary fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ ads|length }}</h3>
+                        <small class="text-muted">Total Campaigns</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-mouse text-success fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ total_clicks }}</h3>
+                        <small class="text-muted">Total Clicks</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-eye text-info fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ total_impressions }}</h3>
+                        <small class="text-muted">Total Impressions</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card border-0 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                            <i class="fas fa-percentage text-warning fa-lg"></i>
+                        </div>
+                        <h3 class="fw-bold mb-1">{{ ctr }}%</h3>
+                        <small class="text-muted">Click-Through Rate</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Campaigns Table -->
+        <div class="card border-0">
+            <div class="card-header bg-white border-0 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Your Campaigns</h5>
+                <span class="badge bg-primary">{{ ads|length }} campaigns</span>
+            </div>
+            <div class="card-body p-0">
+                {% if ads %}
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="border-0 ps-4">Campaign</th>
+                                <th class="border-0">Status</th>
+                                <th class="border-0">Performance</th>
+                                <th class="border-0">Budget</th>
+                                <th class="border-0 text-end pe-4">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ad in ads %}
+                            <tr>
+                                <td class="ps-4">
+                                    <h6 class="mb-1 fw-bold">{{ ad.title }}</h6>
+                                    <small class="text-muted">{{ ad.target_url|truncate(30) }}</small>
+                                </td>
+                                <td>
+                                    <span class="badge 
+                                        {% if ad.status == 'active' %}bg-success
+                                        {% elif ad.status == 'pending' %}bg-warning
+                                        {% elif ad.status == 'paused' %}bg-secondary
+                                        {% elif ad.status == 'rejected' %}bg-danger
+                                        {% else %}bg-info{% endif %}">
+                                        {{ ad.status|title }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="text-muted small">
+                                        <div>{{ ad.clicks }} clicks</div>
+                                        <div>{{ ad.impressions }} impressions</div>
+                                        <div class="fw-bold text-primary">{{ ad.ctr() }}% CTR</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="fw-bold">${{ "%.2f"|format(ad.budget) }}</div>
+                                    <small class="text-muted">${{ "%.2f"|format(ad.spent) }} spent</small>
+                                </td>
+                                <td class="text-end pe-4">
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('advertiser_edit_ad', ad_id=ad.id) }}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <div class="bg-light rounded-circle d-inline-flex align-items-center justify-content-center mb-4" style="width: 100px; height: 100px;">
+                        <i class="fas fa-ad text-muted fa-3x"></i>
+                    </div>
+                    <h4 class="text-muted mb-3">No Campaigns Yet</h4>
+                    <p class="text-muted mb-4">Start advertising to reach our engaged audience</p>
+                    <a href="{{ url_for('advertiser_new_ad') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus me-2"></i>Create First Campaign
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
